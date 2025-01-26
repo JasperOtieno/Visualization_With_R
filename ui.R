@@ -3,41 +3,51 @@
 # Title: Shiny Dashboard Project
 # Date: 12Dec2023
 
+
 # Load packages ----
 if(!require(pacman)) install.packages("pacman")
 pacman::p_load(shiny,
-               shinydashboard #allows to add aesthetics like theme colour
-
+               shinydashboard, #allows to add aesthetics like theme colour
+               rsconnect,
+               fresh
 )
-
-
 
 # Defining the User Interface ----
 
-ui <- dashboardPage(#creating the header bar
-                    skin = "purple", #setting the theme for the title page
-                    dashboardHeader(title = "PERFORMANCE OF VARIOUS SECTORS OF ECONOMY",
-                                    titleWidth = '600px',
+## The Header bar ----
+ui <- dashboardPage(skin = "red", ### Theme colour for title bar ----
+                    dashboardHeader(title = "VISUALIZATION DASHBOARD", ### Title specs ----
+                                    titleWidth = '450px',
                                     disable= FALSE, #if TRUE title does not display
+                                    
+                                    ### Dropdown menus ----
+                                    #### Static Messages ----
                                     dropdownMenu(type = "messages", badgeStatus = "success",
-                                                 messageItem("Training Team",
-                                                             "Please conplete all assignments.",
+                                                 messageItem(from = "Training Team",
+                                                             message = "Please comnplete all assignments."
                                                  ),
-                                                 messageItem("New User",
-                                                             "Go through the app documentations",
+                                                 messageItem(from = "New User",
+                                                             message = "Go through the app documentations"
                                                  )
                                     ),
+                                    #### Notifications ----
                                     dropdownMenu(type = "notifications", badgeStatus = "warning",
-                                                 notificationItem(icon = icon("users"), status = "info",
-                                                                  "2 new countries added this week"
+                                                 notificationItem(icon = icon("earth"), 
+                                                                  status = "info",
+                                                                  text = "2 new countries added this week"
                                                  ),
-                                                 notificationItem(icon = icon("warning"), status = "danger",
-                                                                  "Enrolment near limit."
+                                                 
+                                                 notificationItem(icon = icon("warning"), 
+                                                                  status = "danger",
+                                                                  text = "Enrolment near limit."
                                                  ),
+                                                 
                                                  notificationItem(icon = icon("user", lib = "glyphicon"),
-                                                                  status = "warning", "You changed your username"
+                                                                  status = "success", 
+                                                                  text = "You changed your username"
                                                  )
                                     ),
+                                    #### Tasks ----
                                     dropdownMenu(type = "tasks", badgeStatus = "info",
                                                  taskItem(value = 80, color = "aqua",
                                                           "Clean data"
@@ -52,58 +62,77 @@ ui <- dashboardPage(#creating the header bar
                                                           "Write documentation"
                                                  ),
                                                  taskItem(value = 0, color = "yellow",
-                                                          "Other task"
+                                                          "Look for data for the economy sectors"
                                                  )
                                     )
-                                    ), 
-                    #Creating the sidebar for controls
+                    ), 
+                    
+                    ## The Sidebar for controls ----
                     dashboardSidebar(disable = FALSE,
                                      width = '250px',
                                      collapsed = FALSE,
-                                     sidebarSearchForm(label = "Enter a number", "searchText", "searchButton"),
+                                     
+                                     ### The Search field ----
+                                     sidebarSearchForm(label = "Enter a number or text", "searchText", "searchButton"),
+                                     
+                                     ### Sidebar Items ----
                                      sidebarMenu(id = "tabs",
                                                  collapsed= FALSE,
-                                        menuItem("Home", icon = icon("house"), tabName = "home",
-                                                menuSubItem("About", tabName = "about", icon = icon("circle-info")),
-                                                menuSubItem("Profile", tabName = "prof", icon = icon("user")),
-                                                menuSubItem("Contacts", tabName = "about", icon = icon("phone"))
-                                                ),
-                                        #menuItem("Widgets", icon = icon("th"), tabName = "widgets", badgeLabel = "new",
-                                        #                  badgeColor = "green"),
-                                        menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard"),
-                                                menuSubItem("Demographics", tabName = "demo", icon = icon("people-roof")),
-                                                menuSubItem("Health", tabName = "heal", icon = icon("hospital")),
-                                                menuSubItem("Education", tabName = "educ", icon = icon("school")),
-                                                menuSubItem("Agriculture", tabName = "agric", icon = icon("tractor")),
-                                                menuSubItem("Transport", tabName = "trans",icon = icon("car")),
-                                                menuSubItem("Financials", tabName = "fin", icon = icon("suitcase")),
-                                                menuSubItem("Employment", tabName = "empl", icon = icon("glasses")),
-                                                menuSubItem("Communication", tabName = "comm", icon = icon("envelope")),
-                                                menuSubItem("Water", tabName = "water", icon = icon("faucet-drip")),
-                                                menuSubItem("Energy", tabName = "energ", icon = icon("fire")),
-                                                menuSubItem("Religion", tabName = "rel", icon = icon("church")),
-                                                menuSubItem("Hospitality", tabName = "hosp", icon = icon("bed")),
-                                                menuSubItem("Sports", tabName = "sport", icon = icon("basketball"))
-                                                )
-
-                                       )
-                                     ),
-                                     
+                                                 
+                                                 menuItem("Home",startExpanded = TRUE, icon = icon("home"), tabName = "home",
+                                                          menuSubItem("About", tabName = "about", icon = icon("circle-info")),
+                                                          menuSubItem("Profile", tabName = "prof", icon = icon("user")),
+                                                          menuSubItem("Contacts", tabName = "about", icon = icon("phone"))
+                                                 ),
+                                                 
+                                                 menuItem("Dashboard", startExpanded = FALSE, tabName = "dashboard", icon = icon("dashboard"),
+                                                          #### Sidebar Sub-items ----
+                                                          menuSubItem("Demographics", tabName = "demo", icon = icon("people-roof")),
+                                                          menuSubItem("Health", tabName = "heal", icon = icon("hospital")),
+                                                          menuSubItem("Education", tabName = "educ", icon = icon("school")),
+                                                          menuSubItem("Agriculture", tabName = "agric", icon = icon("tractor")),
+                                                          menuSubItem("Transport", tabName = "trans",icon = icon("car")),
+                                                          menuSubItem("Financials", tabName = "fin", icon = icon("suitcase")),
+                                                          menuSubItem("Employment", tabName = "empl", icon = icon("glasses")),
+                                                          menuSubItem("Communication", tabName = "comm", icon = icon("envelope")),
+                                                          menuSubItem("Water Sources", tabName = "water", icon = icon("faucet-drip")),
+                                                          menuSubItem("Energy Sources", tabName = "energ", icon = icon("fire")),
+                                                          menuSubItem("Religion", tabName = "rel", icon = icon("church")),
+                                                          menuSubItem("Hospitality", tabName = "hosp", icon = icon("bed")),
+                                                          menuSubItem("Sports", tabName = "sport", icon = icon("basketball"))
+                                                 ),
+                                                 
+                                                 menuItem("Documentation", icon = icon("file"), tabName = "doc", badgeLabel = "New",
+                                                          badgeColor = "green")
+                                     )
+                    ),
+                    ## The Body of app page ----  
+                    ### Body Items ----
                     dashboardBody(tabItems(
-                                          tabItem(tabName = "demo", dataTableOutput("mydatatable")),
-                                          tabItem(tabName = "heal"),
-                                          tabItem(tabName = "educ"),
-                                          tabItem(tabName = "agric"),
-                                          tabItem(tabName = "trans"),
-                                          tabItem(tabName = "fin"),
-                                          tabItem(tabName = "empl"),
-                                          tabItem(tabName = "comm"),
-                                          tabItem(tabName = "water"),
-                                          tabItem(tabName = "energ"),
-                                          tabItem(tabName = "rel"),
-                                          tabItem(tabName = "hosp"),
-                                          tabItem(tabName = "sport"))
-                                  )
+                      tabItem(tabName = "demo", dataTableOutput("mydatatable")),
+                      tabItem(tabName = "heal", h2("STI Data Analysis Report"),
+                              fluidRow(column(width=12, box(title="box 1", status = "primary",solidHeader=TRUE, "Display content")),
+                                        column(width=12, box(title="box 2", status = "success",solidHeader=TRUE, "Display content")))),
+                      tabItem(tabName = "educ", "Display information about Education "),
+                      tabItem(tabName = "agric","Display information about Agriculure " ),
+                      tabItem(tabName = "trans", "Display information about Transport "),
+                      tabItem(tabName = "fin", "Display information about Finance "),
+                      tabItem(tabName = "empl", "Display information about Employment "),
+                      tabItem(tabName = "comm", "Display information about Communication "),
+                      tabItem(tabName = "water", "Display information about Water sources "),
+                      tabItem(tabName = "energ", "Display information about Energy source "),
+                      tabItem(tabName = "rel", "Display information about religion "),
+                      tabItem(tabName = "hosp", "Display information about hospitality "),
+                      tabItem(tabName = "sport", "Display information about sports ")),
+                      #Footer
+                      tags$footer(
+                        style="position: absolute; bottom: 0; left: 0; width:100%; text-align: center; background-colour:blue; padding:10px;",
+                        HTML(paste("Developed by Jasper Obwaya | &copy;", format(Sys.Date(),"%Y")))
+                      )
+                    )
+
 )
+
+
 
 
