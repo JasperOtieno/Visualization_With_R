@@ -5,8 +5,7 @@
 
 # Server output ----
 server <- function(input, output){
-  output$mydatatable <- renderDataTable({gap})
+  #output$mydatatable <- renderDataTable({gap})
   
-  
-  
+
 }
