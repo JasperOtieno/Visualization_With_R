@@ -7,6 +7,7 @@
 if(!require(pacman)) install.packages("pacman")
 pacman::p_load(shiny,
                shinydashboard, #allows to add aesthetics like theme colour
-               rsconnect
+               rsconnect,
+               fresh
 )
 

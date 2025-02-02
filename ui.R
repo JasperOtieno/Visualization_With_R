@@ -2,17 +2,12 @@
 # Name: Jasper Otieno
 # Title: Shiny Dashboard Project
 # Date: 12Dec2023
-
-
-# Load packages ----
-if (!require(pacman))
-  install.packages("pacman")
-pacman::p_load(shiny, shinydashboard, #allows to add aesthetics like theme colour
-               rsconnect, fresh)
+################################################################################
 
 # Defining the User Interface ----
 
 ## The Header bar ----
+
 ui <- dashboardPage(
   skin = "red",
   ### Theme colour for title bar ----
@@ -23,18 +18,18 @@ ui <- dashboardPage(
     disable = FALSE,
     #if TRUE title does not display
     
-    ### Dropdown menus ----
-    #### Static Messages ----
-    dropdownMenu(
-      type = "messages",
-      badgeStatus = "success",
-      messageItem(from = "Training Team", message = "Please comnplete all assignments."),
-      messageItem(from = "New User", message = "Go through the app documentations")
-    ),
+    # ### Dropdown menus ----
+    # #### Static Messages ----
+    # dropdownMenu(
+    #   type = "messages",
+    #   badgeStatus = "success",
+    #   messageItem(from = "Training Team", message = "Please comnplete all assignments."),
+    #   messageItem(from = "New User", message = "Go through the app documentations")
+    # ),
     #### Notifications ----
     dropdownMenu(
       type = "notifications",
-      badgeStatus = "warning",
+      badgeStatus = "info",
       notificationItem(
         icon = icon("earth"),
         status = "info",
@@ -42,35 +37,21 @@ ui <- dashboardPage(
       ),
       
       notificationItem(
-        icon = icon("warning"),
-        status = "danger",
-        text = "Enrolment near limit."
-      ),
-      
-      notificationItem(
         icon = icon("user", lib = "glyphicon"),
         status = "success",
-        text = "You changed your username"
-      )
-    ),
-    #### Tasks ----
-    dropdownMenu(
-      type = "tasks",
-      badgeStatus = "info",
-      taskItem(value = 80, color = "aqua", "Clean data"),
-      taskItem(value = 60, color = "blue", "Design UI"),
-      taskItem(
-        value = 30,
-        color = "green",
-        "Design server outputs"
-      ),
-      taskItem(value = 10, color = "red", "Write documentation"),
-      taskItem(
-        value = 0,
-        color = "yellow",
-        "Look for data for the economy sectors"
+        text = "Link visits"
       )
     )
+    # #### Tasks ----
+    # dropdownMenu(
+    #   type = "warning",
+    #   badgeStatus = "info",
+    #   taskItem(value = 80, color = "aqua", "Clean data"),
+    #   taskItem(value = 60, color = "blue", "Design UI"),
+    #   taskItem(value = 30, color = "green","Design server outputs"),
+    #   taskItem(value = 10, color = "red", "Write documentation"),
+    #   taskItem(value = 0,color = "yellow", "Look for data for the economy sectors")
+    # )
   ),
   
   ## The Sidebar for controls ----
