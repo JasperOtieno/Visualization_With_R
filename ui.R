@@ -6,6 +6,11 @@
 
 # Defining the User Interface ----
 
+library(shiny)
+library(shinydashboard)
+library(rsconnect)
+library(fresh)
+
 ## The Header bar ----
 
 ui <- dashboardPage(
@@ -15,8 +20,7 @@ ui <- dashboardPage(
     title = "VISUALIZATION DASHBOARD",
     ### Title specs ----
     titleWidth = '450px',
-    disable = FALSE,
-    #if TRUE title does not display
+    disable = FALSE, #if TRUE title does not display
     
     # ### Dropdown menus ----
     # #### Static Messages ----
@@ -30,16 +34,17 @@ ui <- dashboardPage(
     dropdownMenu(
       type = "notifications",
       badgeStatus = "info",
-      notificationItem(
-        icon = icon("earth"),
-        status = "info",
-        text = "2 new countries added this week"
-      ),
+      
+      # notificationItem(
+      #   icon = icon("earth"),
+      #   status = "info",
+      #   text = "2 new countries added this week"
+      # ),
       
       notificationItem(
         icon = icon("user", lib = "glyphicon"),
         status = "success",
-        text = "Link visits"
+        text = "Visits"
       )
     )
     # #### Tasks ----

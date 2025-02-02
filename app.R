@@ -4,4 +4,4 @@
 # Date: 10Dec2023
 ################################################################################
 
-shinyApp(ui = ui, server = server)
+shinyApp(ui = ui, server = server,options = list(launch.browser=TRUE))
