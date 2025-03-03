@@ -6,57 +6,32 @@
 
 # Defining the User Interface ----
 
-library(shiny)
-library(shinydashboard)
-library(rsconnect)
-library(fresh)
+source("./Scripts/install_packages.R")
+
 
 ## The Header bar ----
 
 ui <- dashboardPage(
-  skin = "red",
-  ### Theme colour for title bar ----
+  skin = "blue",
+  
   dashboardHeader(
-    title = "VISUALIZATION DASHBOARD",
+    title = "MULTI-SECTORAL DASHBOARD",
+    
     ### Title specs ----
     titleWidth = '450px',
-    disable = FALSE, #if TRUE title does not display
+    disable = FALSE,
+    #if TRUE title does not display
     
-    # ### Dropdown menus ----
-    # #### Static Messages ----
-    # dropdownMenu(
-    #   type = "messages",
-    #   badgeStatus = "success",
-    #   messageItem(from = "Training Team", message = "Please comnplete all assignments."),
-    #   messageItem(from = "New User", message = "Go through the app documentations")
-    # ),
     #### Notifications ----
     dropdownMenu(
       type = "notifications",
       badgeStatus = "info",
-      
-      # notificationItem(
-      #   icon = icon("earth"),
-      #   status = "info",
-      #   text = "2 new countries added this week"
-      # ),
-      
       notificationItem(
         icon = icon("user", lib = "glyphicon"),
         status = "success",
         text = "Visits"
       )
     )
-    # #### Tasks ----
-    # dropdownMenu(
-    #   type = "warning",
-    #   badgeStatus = "info",
-    #   taskItem(value = 80, color = "aqua", "Clean data"),
-    #   taskItem(value = 60, color = "blue", "Design UI"),
-    #   taskItem(value = 30, color = "green","Design server outputs"),
-    #   taskItem(value = 10, color = "red", "Write documentation"),
-    #   taskItem(value = 0,color = "yellow", "Look for data for the economy sectors")
-    # )
   ),
   
   ## The Sidebar for controls ----
@@ -104,7 +79,11 @@ ui <- dashboardPage(
         startExpanded = FALSE,
         tabName = "heal",
         icon = icon("hospital"),
-        menuSubItem("STI Dashboard", tabName = "sti_data", icon = icon("bacteria"))
+        menuSubItem(
+          "STI Analysis Dashboard",
+          tabName = "sti_data",
+          icon = icon("bacteria")
+        )
       ),
       
       menuItem(
@@ -188,27 +167,73 @@ ui <- dashboardPage(
   dashboardBody(
     tabItems(
       tabItem(tabName = "demo", "Display information about Demographics "),
-      tabItem(tabName = "heal", "Display information about Health "),
-      tabItem(tabName = "sti_data",
-        h2("STI Data Analysis"),
-        fluidRow(column(
-          width = 12,
-          box(
-            title = "box 1",
-            status = "primary",
-            solidHeader = TRUE,
-            "Display content"
+      tabItem(tabName = "heal"),
+      tabItem(
+        tabName = "sti_data",
+        #h2("STI Analysis Dashboard"),
+        fluidRow(
+          column(
+            width = 2,
+            box(
+              title = "Filters",
+              status = "primary",
+              solidHeader = TRUE,
+              width = NULL,
+              #height = "300px", 
+              selectInput("sti_status", "STI Status", choices = NULL),
+              selectInput("gender", "Gender", choices = NULL),
+              sliderInput(
+                "subjects_age",
+                "Age Range",
+                min = 15,
+                max = 100,
+                value = c(15, 30)
+              ),
+              checkboxGroupInput("level_of_education", "Education Level", choices = NULL),
+              checkboxGroupInput("marital_status", "Marital Status", choices = NULL)
+              #actionButton("apply_filters", "Apply Filters", icon = icon("filter"))
+            )
+          ),
+          column(
+            width = 5,
+            box(
+              title = "Age Distribution",
+              status = "warning",
+              solidHeader = TRUE,
+              width = NULL,
+              height = "300px", 
+              plotOutput("age_distribution_plot")
+            ),
+            box(
+              title = "STI Types",
+              status = "info",
+              solidHeader = TRUE,
+              width = NULL,
+              height = "300px", 
+              plotOutput("sti_type_plot")
+            )
+          ),
+          column(
+            width = 5,
+            box(
+              title = "STI Prevalence by Gender",
+              status = "success",
+              solidHeader = TRUE,
+              width = NULL,
+              height = "300px", 
+              plotOutput("sti_gender_plot")
+            ),
+            box(
+              title = "Summary Statistics",
+              status = "danger",
+              solidHeader = TRUE,
+              width = NULL,
+              height = "300px", 
+              tableOutput("summary_table")
+            )
           )
-        ), column(
-          width = 12,
-          box(
-            title = "box 2",
-            status = "success",
-            solidHeader = TRUE,
-            "Display content"
-          )
-        ))
-      ),
+        )
+    ),
       tabItem(tabName = "educ", "Display information about Education "),
       tabItem(tabName = "agric", "Display information about Agriculure "),
       tabItem(tabName = "trans", "Display information about Transport "),
@@ -227,5 +252,4 @@ ui <- dashboardPage(
       paste("Developed by Jasper Obwaya | &copy;", format(Sys.Date(), "%Y"))
     ))
   )
-  
 )
